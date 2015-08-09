@@ -1,10 +1,10 @@
-var width = 1080,
-    height = 800;
+var width = 1380,
+    height = 780 ;
 
 var color = d3.scale.category20();
 
 var force = d3.layout.force()
-    .charge(-120)
+    .charge(-300)
     .linkDistance(80)
     .size([width, height]);
 
@@ -12,7 +12,7 @@ var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height);
 
-d3.json("../test/data/miserables.json", function(error, graph) {
+d3.json("../test/data/dolphins.json", function(error, graph) {
   if (error) throw error;
 
   force
@@ -24,7 +24,7 @@ d3.json("../test/data/miserables.json", function(error, graph) {
       .data(graph.links)
     .enter().append("line")
       .attr("class", "link")
-      .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+      .style("stroke-width", function(d) { return Math.sqrt(Math.sqrt(d.value*10)); });
 
 // Create the groups under svg
 var gnodes = svg.selectAll('g.gnode')
@@ -37,12 +37,12 @@ var gnodes = svg.selectAll('g.gnode')
 var node = gnodes.append("circle")
   .attr("class", "node")
   .attr("r", 5)
-  .style("fill", function(d) { return color(d.group); })
+  .style("fill", function(d) { return color(d.id); })
   .call(force.drag);
 
 // Append the labels to each group
 var labels = gnodes.append("text")
-  .text(function(d) { return d.name; })
+  .text(function(d) { return d.label; })
   .style("font-size", "10px");
 
   // var node = svg.selectAll(".node")
@@ -53,8 +53,8 @@ var labels = gnodes.append("text")
   //     .style("fill", function(d) { return color(d.group); })
   //     .call(force.drag);
 
-  node.append("title")
-      .text(function(d) { return d.name; });
+  // node.append("title")
+  //     .text(function(d) { return d.name; });
 
   force.on("tick", function() {
     link.attr("x1", function(d) { return d.source.x; })
